@@ -71,16 +71,14 @@ const SearchBooks = () => {
       return false;
     }
 
-    // Uses the saveBook mutation
+    
     try {
-      const response = await saveBook(bookToSave, token);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      // saveBook mutation
+      await saveBook({ variables: bookToSave });
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      
     } catch (err) {
       console.error(err);
     }
