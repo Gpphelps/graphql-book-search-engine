@@ -33,14 +33,15 @@ const LoginForm = () => {
 
     try {
       // Passes the data supplied by the user into the loginUser function and assigns the response to the variable data
-      const data = await loginUser({ variables: userFormData })
+      const { data } = await loginUser({ variables: { ...userFormData }});
+
+      // Use the token assigned to the user to log the user in
+      Auth.login(data.login.token);
 
       if (error) {
         console.log(error.message);
       }
 
-      // Use the token assigned to the user to log the user in
-      Auth.login(data.loginUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
