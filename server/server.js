@@ -1,9 +1,9 @@
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
-const routes = require('./routes');
 // Brings in the ApolloServer for use through a hook
 const { ApolloServer } = require('apollo-server-express');
+// Allows the .env file to to take the place of the NODE_ENV variable
 require('dotenv').config();
 
 // Brings is the resolvers and typeDefs for use by the ApolloServer and graphql
