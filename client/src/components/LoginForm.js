@@ -36,7 +36,7 @@ const LoginForm = () => {
       const data = await loginUser({ variables: userFormData })
 
       if (error) {
-        throw error;
+        console.log(error.message);
       }
 
       // Use the token assigned to the user to log the user in

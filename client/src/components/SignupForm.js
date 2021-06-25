@@ -34,10 +34,10 @@ const SignupForm = () => {
 
     try {
       // Sets the addUser request sent to the apolloServer ad the veriable data 
-      const data = await addUser({ variables: userFormData });
+      const { data } = await addUser({ variables: userFormData });
 
       if (error) {
-        throw error;
+        console.log(error.message);
       }
 
       // Takes the token assigned to the user when created and logges the user in
