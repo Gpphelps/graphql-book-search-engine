@@ -7,11 +7,10 @@ const resolvers = {
         users: async () => {
             return User.find({});
         },
-        user: async (parent, { username, _id }) => {
-            const findUser = await User.findOne({
-                username, _id
-            }).populate('savedBooks');
-
+        user: async (parent, args) => {
+            const findUser = await User.findOne(
+                args
+            ).populate('savedBooks');
             return findUser;
         },
         me: async (parent, args, context) => {
@@ -65,7 +64,7 @@ const resolvers = {
                 return updatedUserBooks;
             }
 
-            throw new AuthenticationError('You need to be logged in to use this feature');
+            throw new AuthenticationError('You need to be logged in to use this feature.');
         },
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
@@ -84,7 +83,7 @@ const resolvers = {
                 return updatedUserBooks;
             }
 
-            throw new AuthenticationError('You need to be logged in to use this feature');
+            throw new AuthenticationError('You need to be logged in to use this feature.');
         },
     },
 };
