@@ -3,19 +3,26 @@ import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
-// Imports useMutation and useQuery from @apollo-client so that the imported REMOVE_BOOK mutation and the GET_ME query can be used 
+// Imports useMutation and useQuery from @apollo-client so that the imported REMOVE_BOOK mutation and the GET_ME query can be called
 import { useMutation, useQuery } from '@apollo/client';
 import { REMOVE_BOOK } from '../utils/mutations';
 import { GET_ME } from '../utils/queries';
 
 const SavedBooks = () => {
+  const [userData, setUserData] = useState({})
   
- 
+ const [ data, loading, refetch ] = useQuery(GET_ME);
 
-  
+  useEffect(() => {
+    setUserData(data?.me);
+  }, [data]);
 
-  // create function that accepts the book's mongo _id value as param and deletes the book from the database
+
+  // Function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
+    // Applies the REMOVE_BOOK mutation to the function removeBook to be called
+    const [removeBook] = useMutation(REMOVE_BOOK);
+
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -23,23 +30,21 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = await deleteBook(bookId, token);
+      // Calls the removeBook function to use the REMOVE_BOOK mutation on the book with the corresponding bookId
+      await removeBook({variables: { bookId }});
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
-      // upon success, remove book's id from localStorage
+      // Upon success, remove book's id from localStorage
       removeBookId(bookId);
+
+      // Forces a refetch of the GET_ME query so that the the updated userData and component is displayed without reloading of the page
+      refetch();
     } catch (err) {
       console.error(err);
     }
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
