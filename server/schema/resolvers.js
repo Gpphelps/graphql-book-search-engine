@@ -8,16 +8,15 @@ const resolvers = {
             return User.find({});
         },
         user: async (parent, args) => {
-            const findUser = await User.findOne(
+            return User.findOne({
                 args
-            ).populate('savedBooks');
-            return findUser;
+            });
         },
         me: async (parent, args, context) => {
             if (context.user) {
-                return User.findOne({ _id: context.User._id }).populate('savedBooks');
+              return User.findOne({ _id: context.user._id }).populate('savedBooks');
             }
-            throw new AuthenticationError('You need to be logged in to view this.');
+            throw new AuthenticationError('You need to be logged in!');
         },
     },
 
@@ -50,11 +49,7 @@ const resolvers = {
             if (context.user) {
                 const updatedUserBooks = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    {
-                        $addToSet: {
-                            savedBooks: args
-                        },
-                    },
+                    { $addToSet: { savedBooks: args } },
                     {
                         new: true,
                         runValidators: true,
@@ -69,13 +64,9 @@ const resolvers = {
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
                 const updatedUserBooks = await User.findOneAndUpdate(
-                    { _id: user.context._id },
+                    { _id: context.user._id },
                     {
-                        $pull: {
-                            savedBooks: {
-                                _id: bookId,
-                            },
-                        },
+                        $pull: { savedBooks: { bookId } }
                     },
                     { new: true }
                 );
@@ -85,7 +76,7 @@ const resolvers = {
 
             throw new AuthenticationError('You need to be logged in to use this feature.');
         },
-    },
+    }
 };
 
 module.exports = resolvers;

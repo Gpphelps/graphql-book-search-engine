@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  React, { useEffect } from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
@@ -9,13 +9,18 @@ import { REMOVE_BOOK } from '../utils/mutations';
 import { GET_ME } from '../utils/queries';
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({})
-  
- const [ data, loading, refetch ] = useQuery(GET_ME);
+  // Brings in the GET_ME userQuery hook with the data, the loading boolean, the refetch ability, and an error code if needed
+ const { loading, error, data, refetch } = useQuery(GET_ME);
 
   useEffect(() => {
-    setUserData(data?.me);
-  }, [data]);
+    refetch();
+  }, [refetch]);
+
+  const userData = data?.me;
+
+  if (error) {
+    console.log(error.message);
+  }
 
   // Applies the REMOVE_BOOK mutation to the function removeBook to be called
   const [removeBook] = useMutation(REMOVE_BOOK);
@@ -30,7 +35,7 @@ const SavedBooks = () => {
 
     try {
       // Calls the removeBook function to use the REMOVE_BOOK mutation on the book with the corresponding bookId
-      await removeBook({variables: { bookId }});
+      await removeBook({ variables: { bookId }});
 
       // Upon success, remove book's id from localStorage
       removeBookId(bookId);
@@ -57,7 +62,7 @@ const SavedBooks = () => {
       <Container>
         <h2>
           {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+          ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <CardColumns>
