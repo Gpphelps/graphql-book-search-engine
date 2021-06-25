@@ -14,15 +14,15 @@ const SignupForm = () => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
+  // Sets the ADD_USER mutation to the addUser function and also allows use of error reporting
+  const [addUser, { error }] = useMutation(ADD_USER);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
   const handleFormSubmit = async (event) => {
-    // Sets the ADD_USER mutation to the addUser function and also allows use of error reporting
-    const [addUser, { error }] = useMutation(ADD_USER);
-
     event.preventDefault();
 
     // Checks if form has everything (as per react-bootstrap docs)
