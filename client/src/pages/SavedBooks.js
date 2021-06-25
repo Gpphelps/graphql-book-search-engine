@@ -17,12 +17,11 @@ const SavedBooks = () => {
     setUserData(data?.me);
   }, [data]);
 
+  // Applies the REMOVE_BOOK mutation to the function removeBook to be called
+  const [removeBook] = useMutation(REMOVE_BOOK);
 
   // Function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
-    // Applies the REMOVE_BOOK mutation to the function removeBook to be called
-    const [removeBook] = useMutation(REMOVE_BOOK);
-
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
