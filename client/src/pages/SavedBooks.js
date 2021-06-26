@@ -12,10 +12,12 @@ const SavedBooks = () => {
   // Brings in the GET_ME userQuery hook with the data, the loading boolean, the refetch ability, and an error code if needed
  const { loading, error, data, refetch } = useQuery(GET_ME);
 
+  // useEffect hook to refetch the user's saved book data every time the data changes 
   useEffect(() => {
     refetch();
-  }, [refetch]);
+  }, [refetch, data]);
 
+  // Sets the userData variable to the data retrieved from the GET_ME query
   const userData = data?.me;
 
   if (error) {
